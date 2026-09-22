@@ -1,492 +1,492 @@
-Support Crew - 3-Agent CrewAI Buildathon
+# 🤖 Support Crew
+### 3-Agent CrewAI Buildathon
 
-A Streamlit application demonstrating a sequential 3-agent AI workflow using CrewAI, OpenAI GPT-4o-mini, and Serper live web search.
+> **Ask → Research → Record**
+>
+> A sequential multi-agent AI application built with **CrewAI, OpenAI GPT-4o-mini, Serper, and Streamlit**.
 
-Overview
+---
 
-Support Crew follows a simple sequential pipeline:
+## 🚀 Overview
 
-User Query
-    │
-    ▼
-┌─────────────────────────────┐
-│ Agent 1 — Assistant         │
-│ Model knowledge             │
-│ No web search               │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│ Agent 2 — Web Search        │
-│ Live Serper web research    │
-│ Current information         │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│ Agent 3 — Entry Agent       │
-│ Records Query + Answers     │
-│ Creates answers.txt         │
-└─────────────────────────────┘
+**Support Crew** demonstrates a simple but practical multi-agent architecture where three specialized agents work together sequentially.
 
-The workflow uses Process.sequential, so the agents execute in the required order.
+The application takes a user's query and processes it through three stages:
 
-Agents
+```mermaid
+flowchart LR
+    A["👤 User Query"] --> B["🧠 Agent 1<br/>Assistant"]
+    B --> C["🌐 Agent 2<br/>Web Search Assistant"]
+    C --> D["📝 Agent 3<br/>Entry Agent"]
+    D --> E["📄 answers.txt"]
 
-1. Assistant
+    B -. "Answer 1" .-> D
+    C -. "Answer 2" .-> D
+```
 
-Purpose: Answer the user's query using the model's existing knowledge.
+### Workflow
 
-Uses OpenAI gpt-4o-mini
+| Stage | Agent | Responsibility |
+|---|---|---|
+| 1 | 🧠 Assistant | Answers using model knowledge |
+| 2 | 🌐 Web Search Assistant | Performs live web research using Serper |
+| 3 | 📝 Entry Agent | Records the query and both answers into `answers.txt` |
 
-Does not use a web-search tool
+The agents run using **`Process.sequential`**, ensuring that each stage executes in the required order.
 
-Produces Answer 1
+---
 
-Useful for demonstrating the difference between model knowledge and live research
+# ✨ Key Features
 
-2. Web Search Assistant
+- 🧠 **Model Knowledge** — First agent answers without web search
+- 🌐 **Live Web Research** — Second agent uses Serper for current information
+- 🔗 **Sequential Multi-Agent Workflow** — Built using CrewAI
+- 📝 **Persistent Output** — Third agent records the complete interaction
+- 📄 **Downloadable Record** — Download the generated `answers.txt`
+- 🎨 **Streamlit UI** — Clean dashboard-style interface
+- 🔐 **Environment-based API Keys** — API credentials are not hard-coded
+- ⚡ **OpenAI GPT-4o-mini** — Lightweight model configuration for the application
 
-Purpose: Obtain current information using live web search.
+---
 
-Uses Serper through SerperDevTool
+# 🤖 The Three Agents
 
-Performs deterministic initial Serper searches
+## 🧠 Agent 1 — Assistant
 
-Provides the search evidence to the agent
+**Purpose:**  
+Answer the user's question using the model's existing knowledge.
 
-Uses live web information for current/latest/status/version questions
+### Responsibilities
 
-Produces Answer 2
+- Receives the original user query
+- Uses OpenAI `gpt-4o-mini`
+- Does **not** perform web searches
+- Produces **Answer 1**
 
-3. Entry Agent
+This agent demonstrates the difference between an answer generated from model knowledge and information obtained through live research.
 
-Purpose: Create the durable record of the workflow.
+---
 
-Receives the original query
+## 🌐 Agent 2 — Web Search Assistant
 
-Receives the output from Agent 1
+**Purpose:**  
+Research the user's query using live web information.
 
-Receives the output from Agent 2
+### Responsibilities
 
-Does not independently answer or evaluate the query
+- Receives the original user query
+- Uses **Serper** for web search
+- Performs deterministic search queries
+- Provides current web evidence to the agent
+- Prioritizes current information for questions involving:
+  - latest
+  - current
+  - status
+  - version
+  - recent developments
 
-Records the query and both answers
+Produces **Answer 2**.
 
-Writes the final record to answers.txt
+> For current-information queries, the web-search stage is designed to supplement the model's existing knowledge with live research.
 
-The Entry Agent is therefore a records/output agent, not a third answering agent.
+---
 
-Technology Stack
+## 📝 Agent 3 — Entry Agent
 
-Python 3.13+
+**Purpose:**  
+Create the final durable record of the workflow.
 
-CrewAI
+### Responsibilities
 
-CrewAI Tools
+- Receives the original query
+- Receives Answer 1 from Agent 1
+- Receives Answer 2 from Agent 2
+- Records both answers
+- Writes the combined record to `answers.txt`
 
-OpenAI GPT-4o-mini
+The Entry Agent **does not independently answer, rank, or evaluate the query**.
 
-Serper
+It is a dedicated **records/output agent**.
 
-Streamlit
+```mermaid
+flowchart TD
+    Q["Original Query"]
+    A1["Agent 1 Output"]
+    A2["Agent 2 Output"]
 
-Pydantic-backed CrewAI objects
+    Q --> E["📝 Entry Agent"]
+    A1 --> E
+    A2 --> E
 
-PowerShell / Windows
+    E --> F["answers.txt"]
+```
 
-Virtual environment (venv)
+---
 
-Project Structure
+# 🏗️ Architecture
 
-Recommended project structure:
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A1 as Agent 1<br/>Assistant
+    participant A2 as Agent 2<br/>Web Search
+    participant A3 as Agent 3<br/>Entry Agent
+    participant F as answers.txt
 
-D:\GENAI\CrewAI\
+    U->>A1: Submit query
+    A1->>A1: Use model knowledge
+    A1-->>A2: Query + workflow continues
+
+    A2->>A2: Search live web using Serper
+    A2-->>A3: Query + Answer 1 + Answer 2
+
+    A3->>F: Write complete record
+    F-->>U: Downloadable output
+```
+
+---
+
+# 🛠️ Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Python | Application development |
+| CrewAI | Multi-agent orchestration |
+| CrewAI Tools | Web-search integration |
+| OpenAI GPT-4o-mini | Language model |
+| Serper | Live web search |
+| Streamlit | User interface |
+| PowerShell | Windows development environment |
+
+---
+
+# 📁 Project Structure
+
+```text
+D:\GENAI\CrewAI
 │
 ├── app.py
-├── answers.txt                 # Generated by Agent 3
-├── support_crew_banner.png     # Optional UI image
 ├── README.md
-└── venv\
+├── requirements.txt
+├── .gitignore
+│
+├── answers.txt
+│   └── Generated by Agent 3 at runtime
+│
+├── support_crew_banner.png
+│   └── Optional UI asset
+│
+└── venv/
+    └── Local Python virtual environment
+```
 
-Prerequisites
+### Runtime files
 
-Make sure Python is installed and that you have:
+`answers.txt` is generated by the application after the CrewAI workflow completes.
 
-An OpenAI API key
+The Python virtual environment is local to the development machine and should not be committed to GitHub.
 
-A Serper API key
+---
 
-Python virtual environment
+# ⚙️ Prerequisites
 
-The required Python packages installed
+Before running the application, make sure you have:
 
-Installation
+- Python 3.13+
+- An OpenAI API key
+- A Serper API key
+- A Python virtual environment
+- Internet connectivity for live web search
 
-Open PowerShell in the project directory:
+---
 
-cd D:\GENAI\CrewAI
+# 🔧 Installation
 
-Create a virtual environment if you do not already have one:
+## 1. Clone the repository
 
+```powershell
+git clone https://github.com/Vivekvinu13/Agent-CrewAI-Buildathon.git
+cd Agent-CrewAI-Buildathon
+```
+
+## 2. Create a virtual environment
+
+```powershell
 python -m venv venv
+```
 
-Activate it:
+## 3. Activate the virtual environment
 
+```powershell
 .\venv\Scripts\Activate.ps1
+```
 
-If PowerShell blocks script execution, you can use the appropriate execution-policy configuration for your Windows environment or activate the environment through the VS Code terminal using an available activation method.
+If PowerShell prevents script execution, use the appropriate execution-policy configuration for your Windows environment.
 
-Install the required packages:
+## 4. Install dependencies
 
-pip install crewai==1.15.22 crewai-tools==1.15.22 streamlit==1.64.0
+```powershell
+pip install -r requirements.txt
+```
 
-Environment Variables
+---
 
-The application expects:
+# 🔑 Environment Variables
 
+The application requires:
+
+```text
 OPENAI_API_KEY
 SERPER_API_KEY
+```
 
 The application uses:
 
+```text
 openai/gpt-4o-mini
+```
 
 as the default model.
 
-PowerShell example
+### PowerShell
 
-Set the variables for the current PowerShell session:
+For the current PowerShell session:
 
+```powershell
 $env:OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 $env:SERPER_API_KEY="YOUR_SERPER_API_KEY"
+```
 
-Do not hard-code API keys into app.py.
+> ⚠️ **Never hard-code API keys inside `app.py`.**
+>
+> Never commit `.env` files, API keys, passwords, or other secrets to GitHub.
 
-Do not commit API keys to GitHub or any other source-control repository.
+---
 
-Run the Application
+# ▶️ Run the Application
 
-First validate the Python syntax:
+## Validate the Python file
 
+```powershell
 python -m py_compile app.py
+```
 
-If there is no output, the syntax check passed.
+If the command produces no output, the syntax check passed.
 
-Then start Streamlit:
+## Start Streamlit
 
+```powershell
 streamlit run app.py
+```
 
 The application will normally be available at:
 
+```text
 http://localhost:8501
+```
 
-Streamlit User Interface
+---
 
-The application provides:
+# 🖥️ Streamlit Interface
 
-Support Crew Header
+The application provides a dashboard-style interface containing:
 
-A visual dashboard-style header describing the workflow:
+### 🔵 Agent 1 — Model Knowledge
 
-3 Agents · Real Answers · One Complete Record
-Ask → Research → Record
+Displays the response generated using the model's existing knowledge.
 
-Query
+### 🟢 Agent 2 — Live Web Search
 
-The user enters a question or support task.
+Displays the response generated using live Serper research.
 
-Answer 1 — Assistant
+### 🟠 Agent 3 — Combined Record
 
-Displays the response from Agent 1 using model knowledge.
+Displays the final record containing:
 
-Answer 2 — Web Search Assistant
+- Original query
+- Answer 1
+- Answer 2
 
-Displays the response from Agent 2 using live Serper research.
+The record is presented as read-only content.
 
-Entry Agent — Final Record
+### 📥 Download
 
-Displays the durable record containing:
+The application provides a download option for:
 
-Original query
-
-Answer 1
-
-Answer 2
-
-The record is displayed as normal read-only content rather than a grey disabled text box.
-
-Download
-
-The application provides a download button for:
-
+```text
 answers.txt
+```
 
-answers.txt
+---
 
-After the CrewAI workflow completes, Agent 3 creates the final text record.
+# 📄 Output Format
 
-The record follows this general structure:
+After the workflow completes, Agent 3 creates a record similar to:
 
+```text
 QUERY
-======
+=====
 
-<original query>
+<Original user query>
 
 ANSWER 1 - ASSISTANT
 ====================
 
-<Agent 1 output>
+<Agent 1 response>
 
 ANSWER 2 - WEB SEARCH ASSISTANT
-===============================
+================================
 
-<Agent 2 output>
+<Agent 2 response>
+```
 
-The exact Agent 2 content may also include evidence or source information returned by the web-search workflow.
+The exact Answer 2 content depends on the live web research performed for the user's query.
 
-Sequential Workflow
+---
 
-The CrewAI configuration uses:
+# 🔄 Sequential Execution
 
-process=Process.sequential
+The CrewAI workflow uses:
 
-The task order is:
+```python
+Process.sequential
+```
 
-assistant_task
-      ↓
-web_task
-      ↓
-entry_task
+The execution order is:
 
-The Entry Agent receives the previous task outputs through task context.
+```text
+User Query
+    │
+    ▼
+┌─────────────────────────┐
+│ Agent 1                 │
+│ Assistant               │
+│ Model Knowledge         │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Agent 2                 │
+│ Web Search Assistant    │
+│ Live Serper Research    │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Agent 3                 │
+│ Entry Agent             │
+│ Records the results     │
+└────────────┬────────────┘
+             │
+             ▼
+        answers.txt
+```
 
-Conceptually:
+---
 
-context=[assistant_task, web_task]
+# 🧪 Example Query
 
-This allows Agent 3 to create the combined record after the first two agents have completed.
+Example:
 
-Web Search Evidence
+```text
+What is the latest version of OpenAI's chat model?
+```
 
-Before Agent 2 executes, the application performs deterministic Serper searches to gather current evidence.
+The workflow demonstrates two different information sources:
 
-The search strategy includes the original query and additional current/date-focused searches.
+**Agent 1**
 
-The resulting evidence is supplied to Agent 2 so that questions involving terms such as:
+Uses the model's existing knowledge.
 
-latest
+**Agent 2**
 
-current
+Performs live web research and uses current web evidence.
 
-today
+**Agent 3**
 
-recently
+Records the original query and both responses without independently evaluating them.
 
-newest
+This makes the difference between **model knowledge** and **live web research** visible in a single workflow.
 
-version
+---
 
-status
+# 🔐 Security
 
-can be researched using current web information.
+The repository intentionally excludes sensitive and generated files through `.gitignore`.
 
-The application also exposes the initial Serper evidence in the Streamlit interface for demonstration/debugging purposes.
+Recommended exclusions:
 
-Model Configuration
+```gitignore
+venv/
+.env
+__pycache__/
+*.pyc
+answers.txt
+.streamlit/secrets.toml
+```
 
-The application is intentionally configured to use:
+Never commit:
 
-openai/gpt-4o-mini
+- OpenAI API keys
+- Serper API keys
+- Passwords
+- Access tokens
+- Private credentials
 
-The LLM configuration uses:
+---
 
-temperature=0.0
-max_completion_tokens=1800
+# 🎯 Buildathon Objective
 
-max_completion_tokens is used because the current API stack in this project rejected max_tokens and returned an error instructing the application to use max_completion_tokens.
+The project demonstrates how a simple multi-agent architecture can divide responsibilities across specialized agents:
 
-Important Implementation Notes
+```text
+        ASK
+         │
+         ▼
+     🧠 THINK
+         │
+         ▼
+    🌐 RESEARCH
+         │
+         ▼
+      📝 RECORD
+```
 
-Do not type Python statements directly into PowerShell
+Rather than making one agent responsible for everything, the workflow separates:
 
-For example, this is Python code:
+**Knowledge → Research → Recording**
 
-import re
+This provides a clear and explainable multi-agent execution model.
 
-It belongs inside app.py.
+---
 
-Do not enter it directly at:
+# 📌 Project Status
 
-PS D:\GENAI\CrewAI>
+| Component | Status |
+|---|---|
+| CrewAI workflow | ✅ Implemented |
+| Agent 1 — Assistant | ✅ Implemented |
+| Agent 2 — Web Search Assistant | ✅ Implemented |
+| Agent 3 — Entry Agent | ✅ Implemented |
+| Sequential execution | ✅ Implemented |
+| Serper integration | ✅ Implemented |
+| Streamlit UI | ✅ Implemented |
+| `answers.txt` generation | ✅ Implemented |
+| Download output | ✅ Implemented |
+| GitHub repository | ✅ Published |
 
-PowerShell commands include:
+---
 
-python -m py_compile app.py
-streamlit run app.py
+# 👨‍💻 Author
 
-Syntax validation
+**Vivek Vinu**
 
-Before launching the application, use:
+Built as part of the **CrewAI Buildathon**.
 
-python -m py_compile app.py
+---
 
-This helps catch Python syntax problems before Streamlit starts.
+## ⭐ Support Crew
 
-Troubleshooting
+**Three agents. One workflow. One complete record.**
 
-Unsupported parameter: 'max_tokens'
-
-If the API reports:
-
-Unsupported parameter: 'max_tokens'
-Use 'max_completion_tokens' instead.
-
-check that app.py contains:
-
-max_completion_tokens=1800
-
-and not:
-
-max_tokens=1800
-
-Also verify the model:
-
-openai/gpt-4o-mini
-
-NameError: initial_search_results is not defined
-
-The Streamlit evidence display must use the values returned by build_crew().
-
-The current architecture returns:
-
-return crew, dynamic_search_query, initial_search_results
-
-and receives them with:
-
-crew, dynamic_search_query, initial_search_results = build_crew(query)
-
-Do not add arbitrary attributes such as:
-
-crew.initial_search_results = initial_search_results
-
-CrewAI's Crew object is Pydantic-backed and does not permit arbitrary custom fields.
-
-"Crew" object has no field "dynamic_search_query"
-
-This happens if custom attributes are assigned directly to the Crew object.
-
-Incorrect:
-
-crew.dynamic_search_query = dynamic_search_query
-crew.initial_search_results = initial_search_results
-
-Correct:
-
-return crew, dynamic_search_query, initial_search_results
-
-and:
-
-crew, dynamic_search_query, initial_search_results = build_crew(query)
-
-re is not defined
-
-If the Agent 3 UI formatting uses the Python regular-expression module, app.py must contain:
-
-import re
-
-near the other imports.
-
-After making the change:
-
-python -m py_compile app.py
-
-Streamlit appears to run old code
-
-Stop Streamlit:
-
-Ctrl + C
-
-Then run it from the project directory:
-
-cd D:\GENAI\CrewAI
-streamlit run app.py
-
-To verify the actual configuration:
-
-Select-String -Path .\app.py -Pattern "gpt-|max_tokens|max_completion_tokens"
-
-Expected configuration:
-
-openai/gpt-4o-mini
-max_completion_tokens=1800
-
-Buildathon Demonstration
-
-A good demonstration flow is:
-
-Enter a question containing current information, for example a latest-version or recently-launched product question.
-
-Run the Support Crew.
-
-Show Agent 1 answering from model knowledge.
-
-Show Agent 2 researching the current answer through Serper.
-
-Show the difference between the two responses when the model's stored knowledge is outdated.
-
-Show Agent 3 creating the combined durable record.
-
-Open or download answers.txt.
-
-This demonstrates why a multi-agent workflow can combine:
-
-Model Knowledge
-       +
-Live Web Research
-       +
-Durable Record
-
-Security
-
-API keys should be stored as environment variables.
-
-Do not commit .env files containing secrets.
-
-Do not paste API keys into source code.
-
-The application should be run using a virtual environment.
-
-Review any external web-search results before relying on them for important decisions.
-
-Expected Outcome
-
-A successful run should produce:
-
-3-agent pipeline completed
-
-Done — both answers were generated and the entry was written to answers.txt.
-
-The UI should then show:
-
-🧠 Answer 1 — Assistant
-        ↓
-🌐 Answer 2 — Web Search Assistant
-        ↓
-📝 Entry Agent — Final Record
-        ↓
-⬇️ Download answers.txt
-
-Project Goal
-
-The project demonstrates a simple but practical agentic workflow in which specialized agents perform different responsibilities rather than having one agent do everything:
-
-ASK
- ↓
-ANSWER
- ↓
-RESEARCH
- ↓
-RECORD
-
-The design keeps the three responsibilities clearly separated while using CrewAI's sequential execution model.
+> **Ask → Research → Record**
